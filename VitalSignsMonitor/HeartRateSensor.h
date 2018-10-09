@@ -6,6 +6,7 @@
 #include "SensorBase.h"
 #include "MAX30100_PulseOximeter.h"
 
+
 /**
  *  Implementacion del sensor de ritmo cardiaco
  *  hereda de SensorBase
@@ -75,17 +76,12 @@ private:
 
     lastBeatDetected = millis();
 
-    /*
     SensorData beatData; // declaramos un dato de sensor y establecemos sus valores
     beatData.time = millis();
     beatData.data = sensor.getHeartRate();
     beatData.type = type;
 
-    data[dataIndex] = beatData; // guardamos el dato obtenido en el arreglo de datos
-    dataIndex++; //incrementamos a la siguiente posicion del arreglo de datos
-
-    */
-    
+    data.push(beatData);    
   }
 
 };
