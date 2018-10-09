@@ -43,11 +43,13 @@ class Queue {
     int _front, _back, _count;
     T *_data;
     int _maxitems;
+    int _iterator;
   public:
     Queue(int maxitems = 256) { 
       _front = 0;
       _back = 0;
       _count = 0;
+      _iterator = 0;
       _maxitems = maxitems;
       _data = new T[maxitems + 1];   
     }
@@ -57,10 +59,14 @@ class Queue {
     inline int count();
     inline int front();
     inline int back();
+    
     void push(const T &item);
     T peek();
     T pop();
     void clear();
+    void initIterator();
+    bool canMove();
+    T next();
 };
 
 template<class T>
@@ -114,10 +120,29 @@ T Queue<T>::peek() {
 }
 
 template<class T>
+void Queue<T>::initIterator() {
+  _iterator = 0;
+}
+
+template<class T>
+bool Queue<T>::canMove() {
+  return _iterator != _count;
+}
+
+template<class T>
+T Queue<T>::next() {
+  if(_iterator == _count)
+    return T();
+  else
+    return _data[++_iterator];
+}
+
+template<class T>
 void Queue<T>::clear() 
 {
   _front = _back;
   _count = 0;
+  _iterator = 0;
 }
 
 #endif
