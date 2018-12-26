@@ -3,7 +3,6 @@
 
 #include "SensorData.h"
 #include "SensorDisplay.h"
-#include "Queue.h"
 
 #define REPORTING_PERIOD_MS 300
 
@@ -21,14 +20,13 @@ public:
   
   SensorBase()
   {
-    data = Queue<SensorData>(10);
   }
   
   bool initialized; // indica si se inicializo bien
   bool canDisplay; // indica si puede mostrar datos en pantalla
+  bool active;
 
   SensorType type; // tipo del sensor
-  Queue<SensorData> data; // datos recuperados
 
   virtual void Setup() {}
   

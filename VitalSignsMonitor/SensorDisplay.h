@@ -26,8 +26,7 @@ void SetupDisplay() {
   ClearScreen();
 }
 
-// Muestra la pantalla principal
-void ShowMainScreen() {
+void DisplayCaptureScreen() {
   tft.setCursor(12, 0);  // Set position (x,y)
   tft.setTextColor(0xFFFF);  // Set color of text. First is the color of text and after is color of background
   tft.setTextSize(0);  // Set text size. Goes from 0 (the smallest) to 20 (very big)
@@ -52,22 +51,22 @@ void ShowMainScreen() {
 
 //Draw lines: 
   
-  tft.drawLine(0, 33, 240, 33, 0x00BA);  // Draw line (x0,y0,x1,y1,color)
+/*  tft.drawLine(0, 33, 240, 33, 0x00BA);  // Draw line (x0,y0,x1,y1,color)
   tft.drawLine(0, 123, 240, 123, 0x00BA);  // Draw line (x0,y0,x1,y1,color)
   tft.drawLine(0, 214, 240, 214, 0x00BA);
   tft.drawLine(120, 214, 120, 302, 0x00BA);
-  tft.drawLine(0, 302, 240, 302, 0x00BA);
+  tft.drawLine(0, 302, 240, 302, 0x00BA); */
   
- /* tft.drawLine(0, 0, 240, 0,0x00BA);
+/* tft.drawLine(0, 0, 240, 0,0x00BA);
   tft.drawLine(0, 319, 240, 319,0x00BA);
   tft.drawLine(0, 0, 0, 320,0x00BA);
-  tft.drawLine(239, 0, 239, 320,0x00BA);
+  tft.drawLine(239, 0, 239, 320,0x00BA); */
   
  
-   /*tft.drawRoundRect(10, 32, 220, 80, 5, 0xF3C3);//C1
-  tft.drawRoundRect(10, 123, 220, 80, 5, 0x1C5E);//C2
-  tft.drawRoundRect(10, 214, 105, 80, 5, 0xF800);
-  tft.drawRoundRect(125, 214, 105, 80, 5, 0x48FE);*/ 
+  tft.drawRoundRect(10, 32, 220, 80, 5, 0x0138);//C1
+  tft.drawRoundRect(10, 123, 220, 80, 5, 0x0138);//C2
+  tft.drawRoundRect(10, 214, 105, 80, 5, 0x0138);
+  tft.drawRoundRect(125, 214, 105, 80, 5, 0x0138);
 
 
  /////////////////////////Etiquetas///////////////////////////////////
@@ -117,5 +116,16 @@ void ShowMainScreen() {
   tft.println("%");
 }
 
+void DisplaySelectedSensor(int position)
+{
+   ClearScreen();  
+   DisplayCaptureScreen();
+   //Rectangulo y su posición
+   int  posicionx[4] = {10, 10, 10, 125};
+   int  posiciony[4] = {32, 123, 214, 214};
+   int  posicionz[4] = {220, 220, 105, 105};
+   
+   tft.fillRect(posicionx[position], posiciony[position], posicionz[position] , 80, 0xF912);
+ }
 
 #endif

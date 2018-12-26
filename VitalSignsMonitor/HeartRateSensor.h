@@ -81,25 +81,7 @@ private:
     beatData.data = sensor.getHeartRate();
     beatData.type = type;
 
-    data.push(beatData);    
-  }
-
-  float getAverage() {
-    SensorData currentData;
-    float averageBeat = 0;
-
-    if(data.count() > 0) {
-      data.initIterator();
-      
-      while(data.canMove()){
-        currentData = data.next();
-        averageBeat += currentData.data;
-      }
-
-      averageBeat = averageBeat / data.count();
-    }
-
-    return averageBeat;
+    //data.push(beatData);    
   }
 
 };
