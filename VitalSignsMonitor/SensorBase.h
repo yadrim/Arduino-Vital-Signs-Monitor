@@ -25,6 +25,7 @@ public:
   bool initialized; // indica si se inicializo bien
   bool canDisplay; // indica si puede mostrar datos en pantalla
   bool active;
+  bool selected;
 
   SensorType type; // tipo del sensor
 
@@ -33,6 +34,25 @@ public:
   virtual void Update() {}
   
   virtual void Display() {}
+  
+  virtual void DisplayPlace() {}
+  
+  void Capture() {
+	active = !active;
+    DisplayPlace();	
+  }
+  
+  void Select() {
+	selected = true;
+	DisplayPlace();
+  }
+  
+  void Unselect() {
+	active = false;
+	selected = false;
+	DisplayPlace();
+  }
+  
 };
 
 #endif

@@ -23,11 +23,11 @@ enum DisplayEnum {
   DATALIST = 3
 };
 
-int selectedSensor;
-
 HeartRateSensor heartRate;
 TemperatureSensor temperature;
-SensorBase currentSensor;
+
+SensorBase *currentSensor;
+int selectedSensor;
 
 int action;
 int menu;
@@ -49,10 +49,10 @@ void setup() {
   if(!temperature.initialized)
     while(1);
 
-
   //set capture screen as default
   menu = CAPTURE;
   selectedSensor = TEMPERATURE;
+  currentSensor= &heartRate;
   
   //dibuja la pantalla principal
   DisplayCaptureScreen();
@@ -66,26 +66,19 @@ void loop() {
     action = SELECT;
   if (digitalRead(benter)== HIGH)
     action = ENTER;
-    /*
   if (digitalRead(bmenu)== HIGH)
     action = MENU;
   if (digitalRead(bmemory)== HIGH)
     action = MEMORY;
-
-    */
   
   if(action != NONE)
     UpdateDisplay();
-
-    /*
 
   switch(menu){
     case CAPTURE:
       UpdateCaptureSensor();
       break;
   }
-
-  */
 }
 
 void UpdateDisplay() {
@@ -125,59 +118,42 @@ void UpdateCapture() {
   switch(action)
   {
     case SELECT:      
-      //temperature.active = false;
-      
+	  currentSensor->Unselect();
+	  
       if(selectedSensor == SPO)
          selectedSensor = TEMPERATURE;
       else
          selectedSensor++;
+	 
+	  switch(selectedSensor)
+	  {
+		case TEMPERATURE:
+		  currentSensor = &temperature;
 
-      DisplaySelectedSensor(selectedSensor);
+		case HEARTRATE:
+		  currentSensor = &heartRate;
+	  }
+  
+	  currentSensor->Select();
       break;
       
     case ENTER:
-      if(selectedSensor == TEMPERATURE)
-        temperature.active = true;
+      currentSensor->Capture();
       break;
     
     case MEMORY:
       break;
   }
-
-  /*
-  switch(selectedSensor)
-  {
-    case TEMPERATURE:
-      currentSensor = temperature;
-
-    case HEARTRATE:
-      currentSensor = heartRate;
-  }
-  */
 }
 
 void UpdateCaptureSensor(){
-  switch(selectedSensor)
-  {
-    case TEMPERATURE:
-      if(temperature.active)
-      {
-        temperature.Update();
-        if(temperature.canDisplay)
-          temperature.Display();
-      }
-  }
-
-  /*
-  if(currentSensor.active) {
-    Serial.print("updating sensor");
-    currentSensor.Update();
+  if(currentSensor->active) {
+    currentSensor->Update();
     
-    if(currentSensor.canDisplay){
-      currentSensor.Display();
+    if(currentSensor->canDisplay){
+      currentSensor->Display();
     }
   } 
-  */ 
 }
 
 // Patients functions
