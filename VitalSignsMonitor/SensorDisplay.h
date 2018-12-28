@@ -26,6 +26,34 @@ void SetupDisplay() {
   ClearScreen();
 }
 
+void ShowTemperature(bool selected, float value) {
+    int background;
+  
+    if(selected)
+      background = 0xF912;
+    else
+      background = 0x0000;
+  
+    tft.fillRect(10, 32, 220 , 80, background);
+    tft.drawRoundRect(10, 32, 220, 80, 5, 0x0138);
+  
+    tft.setCursor(97, 40);
+    tft.setTextColor(0xF3C3);
+    tft.setTextSize(2);
+    tft.println("TEMPERATURE");
+  
+    tft.setCursor(15, 68);
+    tft.setTextColor(0x07E0);
+    tft.setTextSize(1);
+  
+    tft.print((char)167);  tft.println("C");
+
+    tft.setCursor(99, 80);
+    tft.setTextColor(0xFFFF, background);
+    tft.setTextSize(3);  
+    tft.print(value, 0);
+}
+
 void DisplayCaptureScreen() {
   tft.setCursor(12, 0);  // Set position (x,y)
   tft.setTextColor(0xFFFF);  // Set color of text. First is the color of text and after is color of background
@@ -61,9 +89,7 @@ void DisplayCaptureScreen() {
   tft.drawLine(0, 319, 240, 319,0x00BA);
   tft.drawLine(0, 0, 0, 320,0x00BA);
   tft.drawLine(239, 0, 239, 320,0x00BA); */
-  
  
-  tft.drawRoundRect(10, 32, 220, 80, 5, 0x0138);//C1
   tft.drawRoundRect(10, 123, 220, 80, 5, 0x0138);//C2
   tft.drawRoundRect(10, 214, 105, 80, 5, 0x0138);
   tft.drawRoundRect(125, 214, 105, 80, 5, 0x0138);
@@ -71,16 +97,7 @@ void DisplayCaptureScreen() {
 
  /////////////////////////Etiquetas///////////////////////////////////
   //Temp 
-  tft.setCursor(97, 40);
-  tft.setTextColor(0xF3C3);
-  tft.setTextSize(2);
-  tft.println("TEMP");
-  
-  tft.setCursor(15, 68);
-  tft.setTextColor(0x07E0);
-  tft.setTextSize(1);
-  
-  tft.print((char)167);  tft.println("C");
+  ShowTemperature(true, 0);
   
   //NIBP
   tft.setCursor(95, 130);

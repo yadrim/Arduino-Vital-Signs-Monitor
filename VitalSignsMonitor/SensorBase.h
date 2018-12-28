@@ -35,22 +35,20 @@ public:
   
   virtual void Display() {}
   
-  virtual void DisplayPlace() {}
-  
   void Capture() {
-	active = !active;
-    DisplayPlace();	
+	  active = !active;
+    Display();	
   }
   
   void Select() {
-	selected = true;
-	DisplayPlace();
+  	selected = true;
+  	Display();
   }
   
   void Unselect() {
-	active = false;
-	selected = false;
-	DisplayPlace();
+  	active = false;
+  	selected = false;
+  	Display();
   }
   
 };

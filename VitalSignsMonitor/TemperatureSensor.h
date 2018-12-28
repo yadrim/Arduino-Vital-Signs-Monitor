@@ -29,9 +29,7 @@ public:
     ambientTemp = sensor.readAmbientTempC();
     objectTemp = sensor.readObjectTempC();
 
-    if(ambientTemp != objectTemp && (ambientTemp - objectTemp) > 5) {      
-      canDisplay = (millis() - lastDisplayUpdate) > REPORTING_PERIOD_MS; // verificamos si ya paso el intervalo de actualizacion 
-    }
+    canDisplay = (millis() - lastDisplayUpdate) > 500; // verificamos si ya paso el intervalo de actualizacion 
   }
 
   void Display() {
@@ -39,10 +37,7 @@ public:
     Serial.print("Temperature:");    
     Serial.print(sensor.readObjectTempC(), 0);
 
-    tft.setCursor(50,250);
-    tft.setTextColor(0xFFE0, 0x0000);
-    tft.setTextSize(3);  
-    tft.print(sensor.readObjectTempC(), 0);
+    ShowTemperature(selected, sensor.readObjectTempC());        
        
     lastDisplayUpdate = millis(); // establecemos la ultima actualizacion de pantalla
   }

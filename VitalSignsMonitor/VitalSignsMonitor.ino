@@ -32,6 +32,7 @@ int selectedSensor;
 int action;
 int menu;
 bool resetMenu;
+uint32_t lastActionTime;
 
 void setup() {
   // put your setup code here, to run once:
@@ -52,11 +53,11 @@ void setup() {
   //set capture screen as default
   menu = CAPTURE;
   selectedSensor = TEMPERATURE;
-  currentSensor= &heartRate;
+  currentSensor= &temperature;
+  lastActionTime = 0;
   
   //dibuja la pantalla principal
   DisplayCaptureScreen();
-  DisplaySelectedSensor(selectedSensor);
 }
 
 void loop() {
@@ -82,6 +83,13 @@ void loop() {
 }
 
 void UpdateDisplay() {
+  if ((millis() - lastActionTime) < 1000)
+    return;
+
+  Serial.println();
+  Serial.print("Action:");
+  Serial.print(action);
+  
   if(action == MENU)
   {
     if(menu == DATALIST)
@@ -107,6 +115,7 @@ void UpdateDisplay() {
   }
 
   resetMenu = false;
+  lastActionTime = millis();
 }
 
 // Capture functions
@@ -118,27 +127,40 @@ void UpdateCapture() {
   switch(action)
   {
     case SELECT:      
-	  currentSensor->Unselect();
+      Serial.print("Current Sensor:");
+      Serial.print(currentSensor->type);
+      
+	    currentSensor->Unselect();
 	  
       if(selectedSensor == SPO)
          selectedSensor = TEMPERATURE;
       else
          selectedSensor++;
 	 
-	  switch(selectedSensor)
-	  {
-		case TEMPERATURE:
-		  currentSensor = &temperature;
+  	  switch(selectedSensor)
+  	  {
+    		case TEMPERATURE:
+    		  currentSensor = &temperature;
+          break;
+    
+    		default:
+    		  currentSensor = &heartRate;
+          break;
+  	  }
+    
+  	  currentSensor->Select();
 
-		case HEARTRATE:
-		  currentSensor = &heartRate;
-	  }
-  
-	  currentSensor->Select();
+      Serial.print("Change to Sensor:");
+      Serial.print(currentSensor->type);
+
+      Serial.print("Selected Sensor:");
+      Serial.print(selectedSensor);
       break;
       
     case ENTER:
       currentSensor->Capture();
+      Serial.print("Sensor Active:");
+      Serial.print(currentSensor->active);
       break;
     
     case MEMORY:
