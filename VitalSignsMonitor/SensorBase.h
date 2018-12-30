@@ -4,7 +4,7 @@
 #include "SensorData.h"
 #include "SensorDisplay.h"
 
-#define REPORTING_PERIOD_MS 300
+#define REPORTING_PERIOD_MS 500
 
 /**
  * Clase base para los sensores, aqui definimos el comportamiento y variables en comun

@@ -54,6 +54,81 @@ void ShowTemperature(bool selected, float value) {
     tft.print(value, 0);
 }
 
+void ShowHeartRate(bool selected, float heartRate, float spo) {
+  int background;
+  
+  if(selected)
+    background = 0xF912;
+  else
+    background = 0x0000;
+
+  tft.fillRect(10, 214, 105 , 80, background);
+  tft.fillRect(125, 214, 105 , 80, background);
+  
+  tft.drawRoundRect(10, 214, 105, 80, 5, 0x0138);
+  tft.drawRoundRect(125, 214, 105, 80, 5, 0x0138);
+
+  tft.setCursor(51, 218);
+  tft.setTextColor(0xF800);
+  tft.setTextSize(2);
+  tft.println("PR");
+
+  tft.setCursor(93, 250);
+  tft.setTextColor(0x07E0);
+  tft.setTextSize(0);
+  tft.println("bpm");
+
+   //SPO2
+  tft.setCursor(155, 218);
+  tft.setTextColor(0x48FE);
+  tft.setTextSize(2);
+  tft.println("SPO2");
+  
+  tft.setCursor(218, 250);
+  tft.setTextColor(0x07E0);
+  tft.setTextSize(0);
+  tft.println("%");
+  
+  tft.setCursor(50,250);
+  tft.setTextColor(0xFFE0, 0x0000);
+  tft.setTextSize(3);  
+  tft.print(heartRate, 0);
+  
+  tft.setCursor(164,250);
+  tft.setTextColor(0xFFE0, 0x0000);
+  tft.setTextSize(3);
+  tft.print(spo);
+}
+
+void ShowPressure(bool selected, float value) {
+    int background;
+  
+    if(selected)
+      background = 0xF912;
+    else
+      background = 0x0000;
+  
+    tft.fillRect(10, 123, 220, 80, background);
+    tft.drawRoundRect(10, 123, 220, 80, 5, 0x0138);//C2
+
+      //NIBP
+    tft.setCursor(95, 130);
+    tft.setTextColor(0x1C5E);
+    tft.setTextSize(2);
+    tft.println("NIBP");
+    
+    tft.setCursor(15, 159);
+    tft.setTextColor(0x07E0);
+    tft.setTextSize(1);
+    tft.println("mmHg");
+
+/*
+    tft.setCursor(99, 80);
+    tft.setTextColor(0xFFFF, background);
+    tft.setTextSize(3);  
+    tft.print(value, 0); */
+}
+
 void DisplayCaptureScreen() {
   tft.setCursor(12, 0);  // Set position (x,y)
   tft.setTextColor(0xFFFF);  // Set color of text. First is the color of text and after is color of background
@@ -76,61 +151,10 @@ void DisplayCaptureScreen() {
   tft.setTextColor(0xFFE0);
   tft.setTextSize(1);
   tft.println("Patient:");
-
-//Draw lines: 
   
-/*  tft.drawLine(0, 33, 240, 33, 0x00BA);  // Draw line (x0,y0,x1,y1,color)
-  tft.drawLine(0, 123, 240, 123, 0x00BA);  // Draw line (x0,y0,x1,y1,color)
-  tft.drawLine(0, 214, 240, 214, 0x00BA);
-  tft.drawLine(120, 214, 120, 302, 0x00BA);
-  tft.drawLine(0, 302, 240, 302, 0x00BA); */
-  
-/* tft.drawLine(0, 0, 240, 0,0x00BA);
-  tft.drawLine(0, 319, 240, 319,0x00BA);
-  tft.drawLine(0, 0, 0, 320,0x00BA);
-  tft.drawLine(239, 0, 239, 320,0x00BA); */
- 
-  tft.drawRoundRect(10, 123, 220, 80, 5, 0x0138);//C2
-  tft.drawRoundRect(10, 214, 105, 80, 5, 0x0138);
-  tft.drawRoundRect(125, 214, 105, 80, 5, 0x0138);
-
-
- /////////////////////////Etiquetas///////////////////////////////////
-  //Temp 
   ShowTemperature(true, 0);
-  
-  //NIBP
-  tft.setCursor(95, 130);
-  tft.setTextColor(0x1C5E);
-  tft.setTextSize(2);
-  tft.println("NIBP");
-  
-  tft.setCursor(15, 159);
-  tft.setTextColor(0x07E0);
-  tft.setTextSize(1);
-  tft.println("mmHg");
-
- //PR
-  tft.setCursor(51, 218);
-  tft.setTextColor(0xF800);
-  tft.setTextSize(2);
-  tft.println("PR");
-  
-  tft.setCursor(93, 250);
-  tft.setTextColor(0x07E0);
-  tft.setTextSize(0);
-  tft.println("bpm");
-
-   //SPO2
-  tft.setCursor(155, 218);
-  tft.setTextColor(0x48FE);
-  tft.setTextSize(2);
-  tft.println("SPO2");
-  
-  tft.setCursor(218, 250);
-  tft.setTextColor(0x07E0);
-  tft.setTextSize(0);
-  tft.println("%");
+  ShowPressure(false, 0);
+  ShowHeartRate(false, 0, 0);
 }
 
 void DisplaySelectedSensor(int position)

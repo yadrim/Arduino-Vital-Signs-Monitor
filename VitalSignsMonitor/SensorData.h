@@ -6,9 +6,8 @@
 
 enum SensorType {
   TEMPERATURE = 0,
-  PRESION = 1,
+  PRESSURE = 1,
   HEARTRATE = 2,
-  SPO = 3
 };
 
 enum BloodTypeEnum {

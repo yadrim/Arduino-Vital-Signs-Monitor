@@ -1,5 +1,6 @@
 #include "HeartRateSensor.h"
 #include "TemperatureSensor.h"
+#include "PressureSensor.h"
 
 #include <Adafruit_GFX.h>    // Include core graphics library
 #include <Adafruit_ILI9341.h> // Include Adafruit_ILI9341 library to drive the display
@@ -25,6 +26,7 @@ enum DisplayEnum {
 
 HeartRateSensor heartRate;
 TemperatureSensor temperature;
+PressureSensor pressure;
 
 SensorBase *currentSensor;
 int selectedSensor;
@@ -42,6 +44,7 @@ void setup() {
   
   heartRate.Setup();
   temperature.Setup();
+  pressure.Setup();
 
   //si el sensor no logro iniciar correctamente, no hacer nada
   if(!heartRate.initialized)
@@ -83,7 +86,7 @@ void loop() {
 }
 
 void UpdateDisplay() {
-  if ((millis() - lastActionTime) < 1000)
+  if ((millis() - lastActionTime) < 500)
     return;
 
   Serial.println();
@@ -132,7 +135,7 @@ void UpdateCapture() {
       
 	    currentSensor->Unselect();
 	  
-      if(selectedSensor == SPO)
+      if(selectedSensor == HEARTRATE)
          selectedSensor = TEMPERATURE;
       else
          selectedSensor++;
@@ -142,9 +145,13 @@ void UpdateCapture() {
     		case TEMPERATURE:
     		  currentSensor = &temperature;
           break;
-    
-    		default:
-    		  currentSensor = &heartRate;
+
+        case HEARTRATE:
+          currentSensor = &heartRate;
+          break;
+
+        case PRESSURE:
+          currentSensor = &pressure;
           break;
   	  }
     
