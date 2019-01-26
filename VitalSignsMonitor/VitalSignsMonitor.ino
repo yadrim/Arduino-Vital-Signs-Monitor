@@ -28,6 +28,8 @@ HeartRateSensor heartRate;
 TemperatureSensor temperature;
 PressureSensor pressure;
 
+StorageManager storage;
+
 SensorBase *currentSensor;
 int selectedSensor;
 
@@ -41,17 +43,17 @@ void setup() {
   Serial.begin(115200);
 
   SetupDisplay();
-  
-  heartRate.Setup();
+
+  storage.Setup();
+  storage.ShowPatients();
+
+  /*
   temperature.Setup();
   pressure.Setup();
+  heartRate.Setup();
+  */
 
-  //si el sensor no logro iniciar correctamente, no hacer nada
-  if(!heartRate.initialized)
-    while(1);
-
-  if(!temperature.initialized)
-    while(1);
+  
 
   //set capture screen as default
   menu = CAPTURE;

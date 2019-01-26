@@ -4,6 +4,10 @@
 #include <EEPROM.h>
 #include "LinkedList.h"
 
+
+  #define PATIENT_COUNT 5
+  #define PATIENT_DATA_COUNT 5
+
 enum SensorType {
   TEMPERATURE = 0,
   PRESSURE = 1,
@@ -73,7 +77,6 @@ template <class T> int EEPROM_Read(int ee, T& value)
     return i;
 }
 
-/*
 class StorageManager {  
 
   private:
@@ -98,36 +101,62 @@ class StorageManager {
     }
   
   void ReadPatients() {
-    Patient patient;
+    Patient *patient;
     int memoryAddress;
     
-    for(int i=0; i < 5; i++) {
-      patient = patients[i];
+    for(int i=0; i < PATIENT_COUNT; i++) {
+      patient = &patients[i];
       memoryAddress = CalculatePatientAddress(i);
+
+      Serial.print("Memory Address: ");
+      Serial.print(memoryAddress);
+      Serial.println();
       
       EEPROM_Read(memoryAddress, patient);
+
+      Serial.print("Reading patient:");
+
+      //Serial.print(patient->position);
+      Serial.print(patient->name);
+      Serial.println();
     }
     }
     
   public:
-    
-  #define PATIENT_COUNT 5
-  #define PATIENT_DATA_COUNT 5
   
     Patient patients[PATIENT_COUNT];
     DeviceSettings settings;
 
     void Setup() {
       EEPROM_Read(0, settings);
+
+      Serial.print("Memory Ready: ");
+      Serial.print(settings.ready);
+      Serial.println();
     
       if(!settings.ready){
+        Serial.print("Begin to register patients");
         ClearMemory();
         RegisterPatients();
         
         settings.ready = 1;
         EEPROM_Write(0, settings);
       }
+      
+      ReadPatients();
     }
+
+  void ShowPatients() {
+     Patient patient;
+    
+    for(int i=0; i < PATIENT_COUNT; i++) {
+      patient = patients[i];
+      Serial.print("Patient name: ");
+      Serial.print(patient.position);
+      Serial.print(patient.name);
+      Serial.println();
+    }
+  }
   
   void ClearMemory() {
     for(int i=0; i < EEPROM.length(); i++)
@@ -167,6 +196,8 @@ class StorageManager {
       }
     }
   }
+
+  /*
   
   LinkedList<Patient*> GetActivePatients() {
     LinkedList<Patient*> result = new LinkedList<Patient*>();
@@ -195,10 +226,15 @@ class StorageManager {
       }
 
       return result;
-    }
+    }*/
     
   Patient SavePatient(Patient patient) {
     int memoryAddress;
+
+    Serial.print("Saving patient: ");
+    Serial.print(patient.position);
+    Serial.print(patient.name);
+    Serial.println();
     
     memoryAddress = CalculatePatientAddress(patient.position);
     EEPROM_Write(memoryAddress, patient);
@@ -209,13 +245,11 @@ class StorageManager {
     PatientData SavePatientData(PatientData data) {
     int memoryAddress;
 
-    memoryAddress = CalculatePatientAddress(data.patient, data.position);
+    memoryAddress = CalculatePatientDataAddress(data.patient, data.position);
     EEPROM_Write(memoryAddress, data);
 
     return data;
     }
 };
-
-*/
 
 #endif

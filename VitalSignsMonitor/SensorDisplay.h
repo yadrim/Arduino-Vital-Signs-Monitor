@@ -97,7 +97,7 @@ void ShowHeartRate(bool selected, float heartRate, float spo) {
   tft.setCursor(164,250);
   tft.setTextColor(0xFFE0, 0x0000);
   tft.setTextSize(3);
-  tft.print(spo);
+  tft.print(spo,0);
 }
 
 void ShowPressure(bool selected, float value) {

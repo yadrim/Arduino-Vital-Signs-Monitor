@@ -37,6 +37,8 @@ public:
   
   void Capture() {
 	  active = !active;
+    if(active)
+      Setup();
     Display();	
   }
   

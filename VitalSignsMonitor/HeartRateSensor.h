@@ -17,6 +17,9 @@ class HeartRateSensor : public SensorBase
 
   PulseOximeter sensor; // sensor de ritmo cardiaco
   uint32_t lastBeatDetected;
+
+  float heartRate;
+  float spo;
   
 public:
 
@@ -25,23 +28,27 @@ public:
   }
 
   void Setup(){
-    sensor.setOnBeatDetectedCallback((void*) &HeartRateSensor::onBeatDetected); // evento que detecta cuando el sensor obtiene valor
+    //sensor.setOnBeatDetectedCallback((void*) &HeartRateSensor::onBeatDetected); // evento que detecta cuando el sensor obtiene valor
     initialized = sensor.begin(); // se inicializa el sensor
   }
 
   void Update() {
     sensor.update(); // actualizamos el sensor  
+
+    heartRate = sensor.getHeartRate();
+    spo = sensor.getSpO2();
+    
     canDisplay = (millis() - lastDisplayUpdate) > REPORTING_PERIOD_MS; // verificamos si ya paso el intervalo de actualizacion
   }
 
   void Display() {
     Serial.print("Heart rate:");
-    Serial.print(sensor.getHeartRate(), 0);
+    Serial.print(heartRate, 0);
     Serial.print("bpm / SpO2:");
-    Serial.print(sensor.getSpO2());
+    Serial.print(heartRate);
     Serial.println("%");
 
-    ShowHeartRate(selected, sensor.getHeartRate(), sensor.getSpO2());
+    ShowHeartRate(selected, heartRate, spo);
        
     lastDisplayUpdate = millis(); // establecemos la ultima actualizacion de pantalla
   }

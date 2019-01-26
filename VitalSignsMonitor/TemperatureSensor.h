@@ -11,6 +11,7 @@ class TemperatureSensor : public SensorBase
 {
 
   Adafruit_MLX90614 sensor = Adafruit_MLX90614();  // sensor de temperatura
+  double objectTemp;
   
 public:
 
@@ -24,7 +25,6 @@ public:
 
   void Update() {
     double ambientTemp;
-    double objectTemp;
 
     ambientTemp = sensor.readAmbientTempC();
     objectTemp = sensor.readObjectTempC();
@@ -35,9 +35,9 @@ public:
   void Display() {
 
     Serial.print("Temperature:");    
-    Serial.print(sensor.readObjectTempC(), 0);
+    Serial.print(objectTemp, 0);
 
-    ShowTemperature(selected, sensor.readObjectTempC());        
+    ShowTemperature(selected, objectTemp);        
        
     lastDisplayUpdate = millis(); // establecemos la ultima actualizacion de pantalla
   }
