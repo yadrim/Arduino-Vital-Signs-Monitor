@@ -85,7 +85,7 @@ class StorageManager {
       int address = 0;
 
       address = sizeof(DeviceSettings);
-      address += sizeof(Patient) * position;
+      address += (sizeof(Patient) + (sizeof(PatientData) * PATIENT_DATA_COUNT)) * position;
 
       return address;
     }
@@ -94,18 +94,17 @@ class StorageManager {
       int address = 0;
 
       address = sizeof(DeviceSettings);
-      address += (sizeof(Patient) + (sizeof(PatientData) * 10)) * patientPosition;
+      address += (sizeof(Patient) + (sizeof(PatientData) * PATIENT_DATA_COUNT)) * patientPosition;
       address += (sizeof(Patient) + (sizeof(PatientData) * dataPosition));
 
       return address;
     }
   
   void ReadPatients() {
-    Patient *patient;
+    Patient patient;
     int memoryAddress;
     
     for(int i=0; i < PATIENT_COUNT; i++) {
-      patient = &patients[i];
       memoryAddress = CalculatePatientAddress(i);
 
       Serial.print("Memory Address: ");
@@ -114,10 +113,12 @@ class StorageManager {
       
       EEPROM_Read(memoryAddress, patient);
 
+      patients[i] = patient;
+
       Serial.print("Reading patient:");
 
-      //Serial.print(patient->position);
-      Serial.print(patient->name);
+      Serial.print(patient.position);
+      Serial.print(patient.name);
       Serial.println();
     }
     }
@@ -137,6 +138,7 @@ class StorageManager {
       if(!settings.ready){
         Serial.print("Begin to register patients");
         ClearMemory();
+        
         RegisterPatients();
         
         settings.ready = 1;
@@ -173,7 +175,7 @@ class StorageManager {
       patient.bloodType = OP;
       patient.birthDate = 0;
       patient.active = false;
-      sprintf(patient.name, "Paciente %d", i + 1);
+      sprintf(patient.name, "Paciente %d \n", i + 1);
       
       // guardar en la EEPROM
       SavePatient(patient);
