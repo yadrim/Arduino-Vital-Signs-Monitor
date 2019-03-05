@@ -53,6 +53,18 @@ public:
     lastDisplayUpdate = millis(); // establecemos la ultima actualizacion de pantalla
   }
 
+  double GetValue() 
+  {
+    return heartRate;
+  }
+
+  double GetSPO() 
+  {
+    return spo;
+  }
+
+
+  
 private:
 
 /**

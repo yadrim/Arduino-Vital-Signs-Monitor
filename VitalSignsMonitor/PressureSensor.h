@@ -7,6 +7,8 @@
 
 class PressureSensor : public SensorBase
 {
+
+  double pressure;
   
 public:
 
@@ -25,6 +27,11 @@ public:
   void Display() {    
     ShowPressure(selected, 0);
     lastDisplayUpdate = millis(); // establecemos la ultima actualizacion de pantalla
+  }
+
+  double GetValue()
+  {
+    return pressure;
   }
   
 };

@@ -41,6 +41,11 @@ public:
        
     lastDisplayUpdate = millis(); // establecemos la ultima actualizacion de pantalla
   }
+
+  double GetValue() 
+  {
+    return objectTemp;
+  }
   
 };
 
