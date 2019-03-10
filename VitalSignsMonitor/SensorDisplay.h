@@ -4,6 +4,9 @@
 #include <Adafruit_GFX.h>    // Include core graphics library
 #include <Adafruit_ILI9341.h> // Include Adafruit_ILI9341 library to drive the display
 #include <Wire.h>
+#include <virtuabotixRTC.h> 
+
+virtuabotixRTC myRTC(2, 3, 4);////
 
 /**
      DECLARE PIN FOR DISPLAY
@@ -22,6 +25,8 @@ void ClearScreen() {
 
 void SetupDisplay() {
   tft.begin();
+ //myRTC.setDS1302Time(0, 0, 1, 6, 9, 2, 2019); ////
+  
   ClearScreen();
 }
 
@@ -39,7 +44,7 @@ void ShowTemperature(bool selected, float value) {
   tft.setCursor(97, 40);
   tft.setTextColor(0xF3C3);
   tft.setTextSize(2);
-  tft.println("TEMPERATURE");
+  tft.println("TEMP");
 
   tft.setCursor(15, 68);
   tft.setTextColor(0x07E0);
@@ -53,7 +58,7 @@ void ShowTemperature(bool selected, float value) {
   tft.print(value, 0);
 }
 
-void ShowHeartRate(bool selected, float heartRate, float spo) {
+void ShowHeartRate(bool selected, float heartRate, float SpO2) {
   int background;
 
   if (selected)
@@ -96,7 +101,7 @@ void ShowHeartRate(bool selected, float heartRate, float spo) {
   tft.setCursor(164, 250);
   tft.setTextColor(0xFFE0, 0x0000);
   tft.setTextSize(3);
-  tft.print(spo, 0);
+  tft.print(SpO2, 0);
 }
 
 void ShowPressure(bool selected, float value) {
@@ -128,6 +133,42 @@ void ShowPressure(bool selected, float value) {
       tft.print(value, 0); */
 }
 
+ void ClockDate() ////  
+ {  
+  tft.setCursor(45,0);  
+  tft.setTextColor(0xFFFF,0x0000);
+  tft.setTextSize(0);  // 
+  tft.print(myRTC.dayofmonth);  // 
+  tft.print("/");
+  tft.print(myRTC.month);
+  tft.print("/");
+  tft.print(myRTC.year);  
+  
+  tft.setCursor(190,0);
+  tft.setTextColor(0xFFFF,0x0000);
+  tft.setTextSize(0);  // 
+  tft.print(myRTC.hours);
+  tft.print(":");
+  tft.print(myRTC.minutes);
+  tft.print(":");
+  tft.setCursor(225,0);
+  tft.println(myRTC.seconds);
+
+ Serial.print("Current Date / Time: ");
+ Serial.print(myRTC.dayofmonth); //You can switch between day and month if you're using American system
+ Serial.print("/");
+ Serial.print(myRTC.month);
+ Serial.print("/");
+ Serial.print(myRTC.year);
+ Serial.print(" ");
+ Serial.print(myRTC.hours);
+ Serial.print(":");
+ Serial.print(myRTC.minutes);
+ Serial.print(":");
+ Serial.println(myRTC.seconds);  
+ }
+
+ 
 void DisplayCaptureScreen() {
   ClearScreen();
   
@@ -135,7 +176,7 @@ void DisplayCaptureScreen() {
   tft.setTextColor(0xFFFF);  // Set color of text. First is the color of text and after is color of background
   tft.setTextSize(0);  // Set text size. Goes from 0 (the smallest) to 20 (very big)
   tft.println("DATE:");  // Print a text or value
-  tft.setCursor(195, 0);
+  tft.setCursor(160,0);
   tft.println("HRS:");
 
   tft.setCursor(17, 10);
@@ -160,25 +201,25 @@ void DisplayCaptureScreen() {
 
 void SelectPatient(Patient patient) 
 {
-  int posX = 40 + (20 * patient.position);
+  int posY = 40 + (20 * patient.position);
   
-  tft.fillRect(0, posX, 240 , 20, 0xF912);
+  tft.fillRect(0, posY, 240 , 20, 0xF912);
   
   tft.setTextColor(0xFFFF);
   tft.setTextSize(2);
-  tft.setCursor(5, posX);
+  tft.setCursor(5, posY);
   tft.println(patient.name);
 }
 
 void UnselectPatient(Patient patient)
 {
-  int posX = 40 + (20 * patient.position);
+  int posY = 40 + (20 * patient.position);
   
-  tft.fillRect(0, posX, 240 , 20, 0x0000);
+  tft.fillRect(0, posY, 240 , 20, 0x0000);
   
   tft.setTextColor(0xFFFF);
   tft.setTextSize(2);
-  tft.setCursor(5, posX);
+  tft.setCursor(5, posY);
   tft.println(patient.name);
 }
 

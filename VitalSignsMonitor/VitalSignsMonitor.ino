@@ -6,9 +6,9 @@
 #include <Adafruit_ILI9341.h> // Include Adafruit_ILI9341 library to drive the display
 
 #define bselect 6    // PIN para el boton para moverse entre items
-#define benter 5     // PIN para el boton de Activar/Seleccionar
-#define bmenu 12      // PIN Para el boton de cambiar entre pantallas
-#define bmemory 7    // PIN para el boton de guardar los datos 
+#define benter 12     // PIN para el boton de Activar/Seleccionar
+#define bmenu 7     // PIN Para el boton de cambiar entre pantallas
+#define bmemory 5    // PIN para el boton de guardar los datos 
 
 // Enumeracion de los botones que puede presionar el usuario
 enum ActionTypeEnum {
@@ -76,6 +76,8 @@ void setup() {
 }
 
 void loop() {
+  myRTC.updateTime();
+  ClockDate();
   action = NONE;           // en cada ciclo de la funcion loop, establecemos por defecto que no se ha ejecutado ninguna acccion
 
   // verificamos y asignamos que boton se esta presionando
@@ -114,13 +116,13 @@ void DisplayPatientsScreen()
   tft.setTextColor(0xFFFF);
   tft.setTextSize(2);
 
-  int posX = 40;
+  int posY = 40;
 
   do {
-    tft.setCursor(5, posX);
+    tft.setCursor(5, posY);
     tft.println(storage.currentPatient.name);
 
-    posX += 20;
+    posY += 20;
   } while(storage.NextPatient());
 
   storage.ReadPatient();
@@ -131,7 +133,7 @@ void DisplayPatientsScreen()
 /* 
  *  Funcion para determinar que pantalla va a procesar el boton/comando presionado
  */
-void UpdateDisplay() {
+void UpdateDisplay(){
   // validacion para evitar procesar un boton multiples veces
   if ((millis() - lastActionTime) < 500)
     return;
@@ -295,7 +297,7 @@ void UpdatePatients() {
       data.data1 = temperature.GetValue();
       data.data2 = pressure.GetValue();
       data.data3 = heartRate.GetValue();
-      data.data4 = heartRate.GetSPO();
+      data.data4 = heartRate.GetSPO2();
 
       Serial.print("Saving data");
       storage.InsertPatientData(storage.currentPatient, data);

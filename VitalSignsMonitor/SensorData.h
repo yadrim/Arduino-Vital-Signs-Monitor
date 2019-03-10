@@ -2,8 +2,6 @@
 #define __SENSORDATA_H_INCLUDED__
 
 #include <EEPROM.h>
-#include "LinkedList.h"
-
 
 #define PATIENT_COUNT 5
 #define PATIENT_DATA_COUNT 5
@@ -56,7 +54,7 @@ struct PatientData {
   float data1; // temperature
   float data2; // pressure
   float data3; // BPM
-  float data4; // SPO
+  float data4; // SPO2
 };
 
 template <class T> int EEPROM_Write(int ee, const T& value)

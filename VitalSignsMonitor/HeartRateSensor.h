@@ -19,7 +19,7 @@ class HeartRateSensor : public SensorBase
   uint32_t lastBeatDetected;
 
   float heartRate;
-  float spo;
+  float SpO2;
   
 public:
 
@@ -36,7 +36,7 @@ public:
     sensor.update(); // actualizamos el sensor  
 
     heartRate = sensor.getHeartRate();
-    spo = sensor.getSpO2();
+    SpO2 = sensor.getSpO2();
     
     canDisplay = (millis() - lastDisplayUpdate) > REPORTING_PERIOD_MS; // verificamos si ya paso el intervalo de actualizacion
   }
@@ -48,7 +48,7 @@ public:
     Serial.print(heartRate);
     Serial.println("%");
 
-    ShowHeartRate(selected, heartRate, spo);
+    ShowHeartRate(selected, heartRate, SpO2);
        
     lastDisplayUpdate = millis(); // establecemos la ultima actualizacion de pantalla
   }
@@ -58,9 +58,9 @@ public:
     return heartRate;
   }
 
-  double GetSPO() 
+  double GetSPO2() 
   {
-    return spo;
+    return SpO2;
   }
 
 
