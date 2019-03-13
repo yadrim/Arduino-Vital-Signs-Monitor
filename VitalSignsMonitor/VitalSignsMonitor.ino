@@ -54,7 +54,7 @@ void setup() {
   SetupDisplay();          // inicializar y configurar la pantalla 
 
   storage.Setup();         // configurar el repositorio de datos
-
+ 
   /*
     temperature.Setup();
     pressure.Setup();
@@ -73,6 +73,7 @@ void setup() {
   DisplayCaptureScreen();  //dibuja la pantalla principal
 
   Serial.print("Complete Setup");
+  
 }
 
 void loop() {

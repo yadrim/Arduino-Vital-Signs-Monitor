@@ -25,7 +25,7 @@ void ClearScreen() {
 
 void SetupDisplay() {
   tft.begin();
- //myRTC.setDS1302Time(0, 0, 1, 6, 9, 2, 2019); ////
+ myRTC.setDS1302Time(50, 59, 23, 0, 10, 2, 2019); ////
   
   ClearScreen();
 }
@@ -134,27 +134,65 @@ void ShowPressure(bool selected, float value) {
 }
 
  void ClockDate() ////  
- {  
+ { 
+  String seconds;
+  String minutes;
+  String hours;
+  seconds = String(myRTC.seconds);  
+  minutes = String(myRTC.minutes); 
+  hours = String(myRTC.hours); 
+  
+  tft.setTextColor(0xFFFF,0x0000); 
   tft.setCursor(45,0);  
-  tft.setTextColor(0xFFFF,0x0000);
-  tft.setTextSize(0);  // 
-  tft.print(myRTC.dayofmonth);  // 
+  tft.setTextSize(0); 
+  tft.print(myRTC.dayofmonth);   
   tft.print("/");
   tft.print(myRTC.month);
   tft.print("/");
   tft.print(myRTC.year);  
   
-  tft.setCursor(190,0);
   tft.setTextColor(0xFFFF,0x0000);
+  tft.setCursor(186,0);
   tft.setTextSize(0);  // 
-  tft.print(myRTC.hours);
-  tft.print(":");
-  tft.print(myRTC.minutes);
-  tft.print(":");
-  tft.setCursor(225,0);
-  tft.println(myRTC.seconds);
+  if(myRTC.hours>=0 && myRTC.hours<10)
+   {
+    hours= "0"+hours;
+    tft.print(hours);
+   }else {
+    tft.print(myRTC.hours);
+   }
+   
+   tft.setTextColor(0xFFFF,0x0000);
+   tft.setCursor(200,0);
+   tft.print(":");
+   if(myRTC.minutes>=0 && myRTC.minutes<10)
+   {
+   minutes= "0"+minutes;
+    tft.print(minutes);
+   }else {
+    tft.print(myRTC.minutes);
+   }
 
- Serial.print("Current Date / Time: ");
+  tft.setCursor(219,0);
+  tft.print(":");
+ if(myRTC.seconds>=0 && myRTC.seconds<10)
+   {
+
+    seconds= "0"+seconds;
+    tft.print(seconds);
+   }else {
+    
+   tft.print(myRTC.seconds);
+   }
+   
+   
+   
+
+  
+ 
+
+
+ /*Serial.print("Current Date / Time: ");
  Serial.print(myRTC.dayofmonth); //You can switch between day and month if you're using American system
  Serial.print("/");
  Serial.print(myRTC.month);
@@ -165,13 +203,13 @@ void ShowPressure(bool selected, float value) {
  Serial.print(":");
  Serial.print(myRTC.minutes);
  Serial.print(":");
- Serial.println(myRTC.seconds);  
+ Serial.println(myRTC.seconds);  */
  }
 
  
 void DisplayCaptureScreen() {
   ClearScreen();
-  
+    
   tft.setCursor(12, 0);  // Set position (x,y)
   tft.setTextColor(0xFFFF);  // Set color of text. First is the color of text and after is color of background
   tft.setTextSize(0);  // Set text size. Goes from 0 (the smallest) to 20 (very big)
