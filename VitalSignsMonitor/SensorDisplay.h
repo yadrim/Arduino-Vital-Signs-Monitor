@@ -25,8 +25,7 @@ void ClearScreen() {
 
 void SetupDisplay() {
   tft.begin();
- myRTC.setDS1302Time(50, 59, 23, 0, 10, 2, 2019); ////
-  
+ //myRTC.setDS1302Time(50, 59, 23, 0, 31, 12, 2019); ////  
   ClearScreen();
 }
 
@@ -138,18 +137,47 @@ void ShowPressure(bool selected, float value) {
   String seconds;
   String minutes;
   String hours;
+  String day;
+  String month;
+  String year;
+  
   seconds = String(myRTC.seconds);  
   minutes = String(myRTC.minutes); 
   hours = String(myRTC.hours); 
+  day = String(myRTC.dayofmonth);
+  month = String(myRTC.month);
+  year = String(myRTC.year);
   
   tft.setTextColor(0xFFFF,0x0000); 
   tft.setCursor(45,0);  
   tft.setTextSize(0); 
-  tft.print(myRTC.dayofmonth);   
+  if(myRTC.dayofmonth>=0 && myRTC.dayofmonth<10)
+   {
+    day= "0"+day;
+    tft.print(day);
+   }else {
+    tft.print(day);
+   }
+  
+  tft.setCursor(58,0);  
   tft.print("/");
-  tft.print(myRTC.month);
-  tft.print("/");
-  tft.print(myRTC.year);  
+  tft.setCursor(65,0); 
+  if(myRTC.month>=0 && myRTC.month<10)
+   {
+    month= "0"+month;
+    tft.print(month);
+   }else {
+    tft.print(month);
+   }
+
+  tft.setCursor(78,0); 
+  tft.print("/"); 
+  tft.setCursor(85,0);  
+  tft.print(myRTC.year);
+  
+  
+ /*   
+  */
   
   tft.setTextColor(0xFFFF,0x0000);
   tft.setCursor(186,0);
@@ -185,13 +213,6 @@ void ShowPressure(bool selected, float value) {
    tft.print(myRTC.seconds);
    }
    
-   
-   
-
-  
- 
-
-
  /*Serial.print("Current Date / Time: ");
  Serial.print(myRTC.dayofmonth); //You can switch between day and month if you're using American system
  Serial.print("/");
