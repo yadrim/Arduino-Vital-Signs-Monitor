@@ -18,7 +18,7 @@ protected:
 
 public:
   
-  SensorBase()
+   SensorBase()
   {
   }
   

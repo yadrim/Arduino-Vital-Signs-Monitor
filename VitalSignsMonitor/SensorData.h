@@ -95,6 +95,9 @@ class StorageManager {
       address += (sizeof(Patient) + (sizeof(PatientData) * PATIENT_DATA_COUNT)) * patientPosition;
       address += (sizeof(Patient) + (sizeof(PatientData) * dataPosition));
 
+
+      Serial.print("addres: ");
+      Serial.print(address);
       return address;
     }
 
@@ -199,6 +202,8 @@ class StorageManager {
         Serial.print(currentData.data3);
         Serial.print("- SPO: ");
         Serial.print(currentData.data4);
+ 
+        
 
         Serial.println();
       } while (NextPatientData() == true);

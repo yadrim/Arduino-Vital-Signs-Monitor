@@ -6,7 +6,7 @@
 #include <Wire.h>
 #include <virtuabotixRTC.h> 
 
-virtuabotixRTC myRTC(2, 3, 4);////
+virtuabotixRTC RTC(2, 3, 4); //(clk, DAT, RST)
 
 /**
      DECLARE PIN FOR DISPLAY
@@ -18,6 +18,8 @@ virtuabotixRTC myRTC(2, 3, 4);////
 
 // Create display;
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_RST);
+char Date[10];/////
+char HRS[10];
 
 void ClearScreen() {
   tft.fillScreen(0x0000); // Fill screen with black
@@ -25,7 +27,7 @@ void ClearScreen() {
 
 void SetupDisplay() {
   tft.begin();
- //myRTC.setDS1302Time(50, 59, 23, 0, 31, 12, 2019); ////  
+ //myRTC.setDS1302Time(50, 30, 02, 0, 24, 4, 2019); // 24/04/2019   02:30:50  
   ClearScreen();
 }
 
@@ -134,97 +136,21 @@ void ShowPressure(bool selected, float value) {
 
  void ClockDate() ////  
  { 
-  String seconds;
-  String minutes;
-  String hours;
-  String day;
-  String month;
-  String year;
-  
-  seconds = String(myRTC.seconds);  
-  minutes = String(myRTC.minutes); 
-  hours = String(myRTC.hours); 
-  day = String(myRTC.dayofmonth);
-  month = String(myRTC.month);
-  year = String(myRTC.year);
-  
+
   tft.setTextColor(0xFFFF,0x0000); 
   tft.setCursor(45,0);  
   tft.setTextSize(0); 
-  if(myRTC.dayofmonth>=0 && myRTC.dayofmonth<10)
-   {
-    day= "0"+day;
-    tft.print(day);
-   }else {
-    tft.print(day);
-   }
-  
-  tft.setCursor(58,0);  
-  tft.print("/");
-  tft.setCursor(65,0); 
-  if(myRTC.month>=0 && myRTC.month<10)
-   {
-    month= "0"+month;
-    tft.print(month);
-   }else {
-    tft.print(month);
-   }
 
-  tft.setCursor(78,0); 
-  tft.print("/"); 
-  tft.setCursor(85,0);  
-  tft.print(myRTC.year);
-  
-  
- /*   
-  */
-  
+  sprintf(Date,"%02d/%02d/%04d", RTC.dayofmonth, RTC.month, RTC.year);
+  tft.print(Date);
+   
   tft.setTextColor(0xFFFF,0x0000);
   tft.setCursor(186,0);
   tft.setTextSize(0);  // 
-  if(myRTC.hours>=0 && myRTC.hours<10)
-   {
-    hours= "0"+hours;
-    tft.print(hours);
-   }else {
-    tft.print(myRTC.hours);
-   }
-   
-   tft.setTextColor(0xFFFF,0x0000);
-   tft.setCursor(200,0);
-   tft.print(":");
-   if(myRTC.minutes>=0 && myRTC.minutes<10)
-   {
-   minutes= "0"+minutes;
-    tft.print(minutes);
-   }else {
-    tft.print(myRTC.minutes);
-   }
 
-  tft.setCursor(219,0);
-  tft.print(":");
- if(myRTC.seconds>=0 && myRTC.seconds<10)
-   {
+  sprintf(HRS,"%02d:%02d:%02d", RTC.hours, RTC.minutes, RTC.seconds);
+  tft.print(HRS);   
 
-    seconds= "0"+seconds;
-    tft.print(seconds);
-   }else {
-    
-   tft.print(myRTC.seconds);
-   }
-   
- /*Serial.print("Current Date / Time: ");
- Serial.print(myRTC.dayofmonth); //You can switch between day and month if you're using American system
- Serial.print("/");
- Serial.print(myRTC.month);
- Serial.print("/");
- Serial.print(myRTC.year);
- Serial.print(" ");
- Serial.print(myRTC.hours);
- Serial.print(":");
- Serial.print(myRTC.minutes);
- Serial.print(":");
- Serial.println(myRTC.seconds);  */
  }
 
  

@@ -77,7 +77,8 @@ void setup() {
 }
 
 void loop() {
-  myRTC.updateTime();
+  RTC.updateTime();
+  
   ClockDate();
   action = NONE;           // en cada ciclo de la funcion loop, establecemos por defecto que no se ha ejecutado ninguna acccion
 
@@ -108,9 +109,10 @@ void DisplayPatientsScreen()
   ClearScreen();
 
   tft.setCursor(70, 10);
-  tft.setTextColor(0xFFFF);
+  tft.setTextColor(0x01CE);
   tft.setTextSize(2);
   tft.println("PATIENTS");
+  tft.drawLine(0, 30, 240, 30, 0x00AA); 
 
   storage.ReadPatient();
 
@@ -136,7 +138,8 @@ void DisplayPatientsScreen()
  */
 void UpdateDisplay(){
   // validacion para evitar procesar un boton multiples veces
-  if ((millis() - lastActionTime) < 500)
+  if ((millis() - lastActionTime) < 400)
+  
     return;
 
   Serial.println();
