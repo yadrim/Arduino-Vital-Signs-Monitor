@@ -3,8 +3,11 @@
 
 #include <EEPROM.h>
 
+
+
 #define PATIENT_COUNT 5
 #define PATIENT_DATA_COUNT 5
+
 
 enum SensorType {
   TEMPERATURE = 0,
@@ -43,19 +46,30 @@ struct Patient {
   int birthDate;
 };
 
+struct DateTime {
+  int day;
+  int month;
+  int year;
+
+  int hours;
+  int minutes;
+  int seconds;
+};
+
+
 struct PatientData {
   int position;
   int patient;
   bool active;
 
-  int date;
-  int time;
+  DateTime date;
 
   float data1; // temperature
   float data2; // pressure
   float data3; // BPM
   float data4; // SPO2
 };
+
 
 template <class T> int EEPROM_Write(int ee, const T& value)
 {
@@ -84,8 +98,9 @@ class StorageManager {
 
       address = sizeof(DeviceSettings);
       address += (sizeof(Patient) + (sizeof(PatientData) * PATIENT_DATA_COUNT)) * position;
-
       return address;
+      
+      
     }
 
     int CalculatePatientDataAddress(int patientPosition, int dataPosition) {
@@ -94,10 +109,6 @@ class StorageManager {
       address = sizeof(DeviceSettings);
       address += (sizeof(Patient) + (sizeof(PatientData) * PATIENT_DATA_COUNT)) * patientPosition;
       address += (sizeof(Patient) + (sizeof(PatientData) * dataPosition));
-
-
-      Serial.print("addres: ");
-      Serial.print(address);
       return address;
     }
 
@@ -116,6 +127,7 @@ class StorageManager {
     void Setup() {
       EEPROM_Read(0, settings);
 
+     // settings.ready = 0;
       if (!settings.ready) {
       Serial.print("Begin to register patients");
       ClearMemory();
@@ -171,10 +183,11 @@ class StorageManager {
       return true;
     }
 
-    void ShowPatients() {
+   void ShowPatients() {
       ReadPatient();
 
       do {
+        
         Serial.print("Reading patient: ");
 
         Serial.print(currentPatient.position);
@@ -185,13 +198,14 @@ class StorageManager {
       } while (NextPatient() == true);
     }
 
-    void ShowPatientData() {
+   void ShowPatientData() {
       ReadPatientData();
+      
+     
 
-      Serial.print("Patient: ");
-      Serial.print(currentPatient.name);
 
       do {
+//        
         Serial.print(" - Position: #");
         Serial.print(currentData.position + 1);
         Serial.print("Temp: ");
@@ -200,12 +214,25 @@ class StorageManager {
         Serial.print(currentData.data2);
         Serial.print("- BPM: ");
         Serial.print(currentData.data3);
-        Serial.print("- SPO: ");
+        Serial.print("- SPO2: ");
         Serial.print(currentData.data4);
- 
         
+        Serial.print("  -Date: ");
+        Serial.print(currentData.date.day);
+        Serial.print("/");
+        Serial.print(currentData.date.month);
+        Serial.print("/");
+        Serial.print(currentData.date.year) ; 
+        Serial.print("  -Hrs: ");
+        Serial.print(currentData.date.hours);
+        Serial.print(":");
+        Serial.print(currentData.date.minutes);
+        Serial.print(":");
+        Serial.print(currentData.date.seconds) ; 
 
         Serial.println();
+        
+        
       } while (NextPatientData() == true);
     }
 
@@ -234,8 +261,6 @@ class StorageManager {
           data.position = x;
           data.patient = 0;
           data.active = 0;
-          data.date = 0;
-          data.time = 0;
 
           data.data1 = 0;
           data.data2 = 0;

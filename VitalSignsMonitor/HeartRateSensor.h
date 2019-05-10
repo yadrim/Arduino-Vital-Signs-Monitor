@@ -42,7 +42,7 @@ public:
   }
 
   void Display() {
-    Serial.print("Heart rate:");
+    Serial.print(" Heart rate: ");
     Serial.print(heartRate, 0);
     Serial.print("bpm / SpO2:");
     Serial.print(heartRate);
