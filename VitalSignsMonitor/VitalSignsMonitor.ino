@@ -365,6 +365,7 @@ void UpdatePatientData() {
   switch (action)
   {
     case SELECT:
+      menu = PATIENTS;
       DisplayPatientsScreen();
       Serial.print("regresar a SELECT");
       break;
