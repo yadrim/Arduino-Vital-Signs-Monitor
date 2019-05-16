@@ -319,6 +319,7 @@ void UpdatePatients() {
 
     case ENTER:
       if (ShowPatientMode = 2) {
+        menu = DATALIST;
         DisplayPatientDataScreen();
         ShowPatientReg();
       }
