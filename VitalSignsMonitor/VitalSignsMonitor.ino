@@ -48,8 +48,7 @@ int action;                // accion/boton que presiona el usuario
 int menu;                  // pantalla actual del programa
 bool resetMenu;            // bandera para indicar si se necesita volver a dibujar toda la pantalla
 uint32_t lastActionTime;   // tiempo en que se ejecuto la ultima accion del usuario
-bool ShowPatientMode;
-bool PatientMenu;
+int ShowPatientMode;       // 1- Save Mode 2- Show Mode
 
 void setup() {
   // put your setup code here, to run once:
@@ -82,7 +81,6 @@ void setup() {
 
 void loop() {
   RTC.updateTime();
-  
 
   action = NONE;           // en cada ciclo de la funcion loop, establecemos por defecto que no se ha ejecutado ninguna acccion
 
@@ -100,12 +98,10 @@ void loop() {
   if (action != NONE)
     UpdateDisplay();
 
-   if (menu == CAPTURE)
-     ClockDate();
-    
   // actualizamos siempre en cada ciclo del loop, dependiendo de la pantalla actual
   switch (menu) {
     case CAPTURE:
+      ClockDate();
       UpdateCaptureSensor();
       break;
   }
@@ -148,7 +144,7 @@ void UpdateDisplay() {
   if ((millis() - lastActionTime) < 400)
 
     return;
-   
+
   Serial.println();
   Serial.print("Action:");
   Serial.print(action);
@@ -156,13 +152,22 @@ void UpdateDisplay() {
   // si se presiono el boton de MENU, actualizamos la variable menu e indicamos que necesita dibujar la nueva pantalla
   if (action == MENU)
   {
-    if (menu == PATIENTS)
-      menu = CAPTURE;
-    else
-      menu++;
+    switch (menu)
+    {
+      case CAPTURE:
+        menu = PATIENTS;
+        break;
+
+      case PATIENTS:
+        menu = CAPTURE;
+        break;
+
+      case DATALIST:
+        menu = PATIENTS;
+        break;
+    }
 
     resetMenu = true;
-
   }
 
   // verificamos la pantalla actual y procesamos sobre ella
@@ -170,7 +175,6 @@ void UpdateDisplay() {
   {
     case CAPTURE:
       UpdateCapture();
-
       break;
 
     case PATIENTS:
@@ -178,7 +182,7 @@ void UpdateDisplay() {
       break;
 
     case DATALIST:
-//    UpdatePatientData();///////////////////////
+      UpdatePatientData();
       break;
   }
 
@@ -259,6 +263,9 @@ void UpdateCapture() {
 
       Serial.print("Change to PATIENT Menu");
 
+      // Indicamos que la pantalla de pacientes sera para guardar informacion
+      ShowPatientMode = 1;
+
       // establecer la pantalla de pacientes
       menu = PATIENTS;
       DisplayPatientsScreen();
@@ -285,15 +292,10 @@ void UpdatePatients() {
   if (resetMenu) {
     DisplayPatientsScreen();
     resetMenu = false;
-  }
 
-     else if (PatientMenu == true){ 
-     DisplayPatientsScreen();
-     PatientMenu = false;
-     Serial.print("regresar a SELECT");
-      
-     }
- 
+    // Indicamos que la seleccion de pacientes sera para mostrar datos
+    ShowPatientMode = 2;
+  }
 
   switch (action)
   {
@@ -316,108 +318,62 @@ void UpdatePatients() {
       break;
 
     case ENTER:
-
-      DisplayPatientDataScreen();
-      ShowPatientReg();
-      storage.ShowPatientData();
-      PatientMenu = true;
-  
-      if (action == SELECT){
-      UpdatePatients();
+      if (ShowPatientMode = 2) {
+        DisplayPatientDataScreen();
+        ShowPatientReg();
       }
-
-  
       break;
 
     case MEMORY:
+      if (ShowPatientMode = 1) {
 
-      PatientData data;
-      data.data1 = temperature.GetValue();
-      data.data2 = pressure.GetValue();
-      data.data3 = heartRate.GetValue();
-      data.data4 = heartRate.GetSPO2();
+        PatientData data;
+        data.data1 = temperature.GetValue();
+        data.data2 = pressure.GetValue();
+        data.data3 = heartRate.GetValue();
+        data.data4 = heartRate.GetSPO2();
 
-      data.date.day = RTC.dayofmonth;
-      data.date.month = RTC.month;
-      data.date.year = RTC.year;
-      data.date.hours = RTC.hours;
-      data.date.minutes = RTC.minutes;
-      data.date.seconds = RTC.seconds;
+        data.date.day = RTC.dayofmonth;
+        data.date.month = RTC.month;
+        data.date.year = RTC.year;
+        data.date.hours = RTC.hours;
+        data.date.minutes = RTC.minutes;
+        data.date.seconds = RTC.seconds;
 
-      Serial.print("Saving data");
-      storage.InsertPatientData(storage.currentPatient, data);
+        Serial.print("Saving data");
+        storage.InsertPatientData(storage.currentPatient, data);
 
-      storage.ShowPatientData();
-
-      menu = CAPTURE;
-      DisplayCaptureScreen();
-      temperature.Display();
-      pressure.Display();
-      heartRate.Display();
+        menu = CAPTURE;
+        DisplayCaptureScreen();
+        temperature.Display();
+        pressure.Display();
+        heartRate.Display();
+      }
       break;
   }
 
   resetMenu = false;
 }
 
-/*////////////
 void UpdatePatientData() {
-  if (resetMenu) {  
+  if (resetMenu) {
     DisplayPatientsScreen();
-    resetMenu = false; }
-    
-     else if (PatientMenu == true){ 
-     DisplayPatientsScreen();
-     PatientMenu = false;
-     Serial.print("regresar a SELECT");
-      
-     }
- 
+    resetMenu = false;
+  }
+
   switch (action)
   {
     case SELECT:
-      UnselectPatient(storage.currentPatient);
-
-      Serial.print("Previous patient: ");
-      Serial.print(storage.selectedPatient);
-
-      if (!storage.NextPatient())
-        storage.ReadPatient();
-
-      SelectPatient(storage.currentPatient);
-
-      Serial.print(" - Current patient: ");
-      Serial.print(storage.currentPatient.name);
-
-      Serial.println();
-
+      DisplayPatientsScreen();
+      Serial.print("regresar a SELECT");
       break;
-
-    case ENTER:
-
-      DisplayPatientDataScreen();
-      ShowPatientReg();
-      storage.ShowPatientData();
-      PatientMenu = true;
-  
-      if (action == SELECT){
-      UpdatePatients();
-      }
-
-      break;
-
-
-
-
   }
 
   resetMenu = false;
-}*/
+}
 
 
 void ShowPatientReg() {
-
-
   storage.ReadPatientData();
 
   tft.setCursor(90, 35);
