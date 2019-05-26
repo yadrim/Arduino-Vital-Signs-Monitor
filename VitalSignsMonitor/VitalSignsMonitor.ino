@@ -1,4 +1,3 @@
-
 #include "HeartRateSensor.h"
 #include "TemperatureSensor.h"
 #include "PressureSensor.h"
@@ -6,6 +5,7 @@
 #include <Adafruit_GFX.h>    // Include core graphics library
 #include <Adafruit_ILI9341.h> // Include Adafruit_ILI9341 library to drive the display
 
+#include <SoftwareSerial.h>  
 
 #define bselect 6    // PIN para el boton para moverse entre items
 #define benter 12     // PIN para el boton de Activar/Seleccionar
@@ -25,7 +25,8 @@ enum ActionTypeEnum {
 enum DisplayEnum {
   CAPTURE = 1,     // pantalla de captura de signos vitales
   PATIENTS = 2,    // pantalla de listado de pacientes
-  DATALIST = 3     // pantalla de listado de datos de un paciente
+  DATALIST = 3,     // pantalla de listado de datos de un paciente
+  CONECTION = 4
 };
 
 /*
@@ -50,9 +51,13 @@ bool resetMenu;            // bandera para indicar si se necesita volver a dibuj
 uint32_t lastActionTime;   // tiempo en que se ejecuto la ultima accion del usuario
 int ShowPatientMode;       // 1- Save Mode 2- Show Mode
 
+SoftwareSerial BT(1,0);    // pines RX y TX
+
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  BT.begin(38400);  
 
   SetupDisplay();          // inicializar y configurar la pantalla
 
@@ -159,12 +164,18 @@ void UpdateDisplay() {
         break;
 
       case PATIENTS:
-        menu = CAPTURE;
+        menu = CONECTION;
         break;
+        
+      case CONECTION:
+        menu = CAPTURE;
+        break; 
 
       case DATALIST:
         menu = PATIENTS;
         break;
+
+ 
     }
 
     resetMenu = true;
@@ -184,6 +195,11 @@ void UpdateDisplay() {
     case DATALIST:
       UpdatePatientData();
       break;
+
+    case CONECTION:
+      UpdateConection();
+      break;
+      
   }
 
   // establecemos el tiempo en que fue procesado el boton, para evitar procesarlo multiples veces
@@ -318,7 +334,7 @@ void UpdatePatients() {
       break;
 
     case ENTER:
-      if (ShowPatientMode = 2) {
+      if (ShowPatientMode == 2) {
         menu = DATALIST;
         DisplayPatientDataScreen();
         ShowPatientReg();
@@ -326,7 +342,7 @@ void UpdatePatients() {
       break;
 
     case MEMORY:
-      if (ShowPatientMode = 1) {
+      if (ShowPatientMode == 1) {
 
         PatientData data;
         data.data1 = temperature.GetValue();
@@ -432,5 +448,24 @@ void ShowPatientReg() {
     Y4 += 54;
 
   } while (storage.NextPatientData() == true);
+}
 
+void UpdateConection(){
+   if (resetMenu) {
+     DisplayConectionScreen();
+     resetMenu = false;
+   }
+   switch (action)
+   {
+    case ENTER:
+
+     if(BT.available())    // Si llega un dato por el puerto BT se envía al monitor serial
+     Serial.write(BT.read());
+ 
+     if(Serial.available())  // Si llega un dato por el monitor serial se envía al puerto BT
+     BT.write(Serial.read());
+   }
+
+  resetMenu = false; 
+  
 }

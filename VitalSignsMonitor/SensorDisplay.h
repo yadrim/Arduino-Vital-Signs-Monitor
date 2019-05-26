@@ -278,7 +278,7 @@ tft.drawLine(0, 119, 240, 119, 0x00AA);
     tft.setTextColor(0x00AA);  
     tft.setTextSize(1);
     tft.print("=> ");
-    tft.setCursor(180, 109);
+    //tft.setCursor(180, 109);
 
 
     tft.setCursor(10,129);
@@ -308,8 +308,7 @@ tft.drawLine(0, 119, 240, 119, 0x00AA);
     tft.setTextColor(0x00AA);  
     tft.setTextSize(1);
     tft.print("=> ");
-    tft.setCursor(180, 163);
-
+   
     tft.setCursor(10,183);
     tft.setTextColor(0xFFFF);
     tft.setTextSize(1);
@@ -388,7 +387,7 @@ tft.drawLine(0, 119, 240, 119, 0x00AA);
     tft.setTextColor(0xFFFF);
     tft.setTextSize(1);
     tft.print("SPO2:");
-
+ }
    
 
     /*  
@@ -536,7 +535,32 @@ do {
         tft.setCursor(175,301);
         tft.print("%");
 */
-    }
+void  DisplayConectionScreen()
+   {
+     ClearScreen();
+     tft.setCursor(70,10);
+     tft.setTextColor(0x01CE);
+     tft.setTextSize(2);
+     tft.println("Settings");
+
+    tft.setTextColor(0xFFFF);
+    tft.setTextSize(2);    
+    tft.setCursor(10, 40);
+    tft.println("Bluetooth");
+
+    tft.setTextColor(0xFFFF);
+    tft.setTextSize(2);    
+    tft.setCursor(190, 40);
+    tft.println("OFF");
+    
+    /*tft.setTextColor(0xFFFF);
+    tft.setTextSize(2);    
+    tft.setCursor(190, 40);
+    tft.println("ON");*/
+   }
+    
+   
+    
 
 
 
