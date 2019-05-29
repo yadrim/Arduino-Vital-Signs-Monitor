@@ -1,5 +1,5 @@
-#ifndef __CONECTIONMANAGER_H_INCLUDED__
-#define __CONECTIONMANAGER_H_INCLUDED__
+#ifndef __CONNECTIONMANAGER_H_INCLUDED__
+#define __CONNECTIONMANAGER_H_INCLUDED__
 
 #include <SoftwareSerial.h>  
 SoftwareSerial BT(10,11);    // pines TX y RX 
@@ -14,7 +14,7 @@ void setup(){
   BT.begin(38400);    
 }
 
-void CONECTION(){
+void CONNECTION(){
   if(BT.available())    // Si llega un dato por el puerto BT se envía al monitor serial
   Serial.write(BT.read());
  
@@ -22,7 +22,7 @@ void CONECTION(){
   BT.write(Serial.read());
 
 }
-crear una clase igua a storage
+
 
 
 

@@ -535,7 +535,7 @@ do {
         tft.setCursor(175,301);
         tft.print("%");
 */
-void  DisplayConectionScreen()
+void  DisplayConnectionScreen()
    {
      ClearScreen();
      tft.setCursor(70,10);

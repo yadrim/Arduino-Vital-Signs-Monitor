@@ -5,8 +5,6 @@
 #include <Adafruit_GFX.h>    // Include core graphics library
 #include <Adafruit_ILI9341.h> // Include Adafruit_ILI9341 library to drive the display
 
-#include <SoftwareSerial.h>  
-
 #define bselect 6    // PIN para el boton para moverse entre items
 #define benter 12     // PIN para el boton de Activar/Seleccionar
 #define bmenu 7     // PIN Para el boton de cambiar entre pantallas
@@ -51,13 +49,11 @@ bool resetMenu;            // bandera para indicar si se necesita volver a dibuj
 uint32_t lastActionTime;   // tiempo en que se ejecuto la ultima accion del usuario
 int ShowPatientMode;       // 1- Save Mode 2- Show Mode
 
-SoftwareSerial BT(1,0);    // pines RX y TX
-
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  BT.begin(38400);  
+  Serial1.begin(38400);  
 
   SetupDisplay();          // inicializar y configurar la pantalla
 
@@ -197,7 +193,7 @@ void UpdateDisplay() {
       break;
 
     case CONECTION:
-      UpdateConection();
+      UpdateConnection();
       break;
       
   }
@@ -450,20 +446,20 @@ void ShowPatientReg() {
   } while (storage.NextPatientData() == true);
 }
 
-void UpdateConection(){
+void UpdateConnection(){
    if (resetMenu) {
-     DisplayConectionScreen();
+     DisplayConnectionScreen();
      resetMenu = false;
    }
    switch (action)
    {
     case ENTER:
-
-     if(BT.available())    // Si llega un dato por el puerto BT se envía al monitor serial
-     Serial.write(BT.read());
- 
+     Serial.print("Listo");
+     if(Serial1.available())   // Si llega un dato por el puerto BT se envía al monitor serial
+     Serial.write(Serial1.read());
+    
      if(Serial.available())  // Si llega un dato por el monitor serial se envía al puerto BT
-     BT.write(Serial.read());
+     Serial1.write(Serial.read());
    }
 
   resetMenu = false; 
