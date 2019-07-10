@@ -2,6 +2,7 @@
 #include "HeartRateSensor.h"
 #include "TemperatureSensor.h"
 #include "PressureSensor.h"
+#include "CommunicationManager.h"
 
 #include <Adafruit_GFX.h>    // Include core graphics library
 #include <Adafruit_ILI9341.h> // Include Adafruit_ILI9341 library to drive the display
@@ -43,6 +44,7 @@ int selectedSensor;        // tipo de sensor seleccionado
     Objetos y variables globales
 */
 StorageManager storage;    // objeto que administra el acceso a datos en la EEPROM
+CommunicationManager communication;
 
 int action;                // accion/boton que presiona el usuario
 int menu;                  // pantalla actual del programa
@@ -57,6 +59,7 @@ void setup() {
   SetupDisplay();          // inicializar y configurar la pantalla
 
   storage.Setup();         // configurar el repositorio de datos
+  communication.Setup();
 
   /*
     temperature.Setup();
