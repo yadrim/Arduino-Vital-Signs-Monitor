@@ -5,20 +5,21 @@
 #include "SensorData.h"
 
 SoftwareSerial bluetooth(10,11);
+typedef void (*OnMessageReceived)(String message);
 
 class CommunicationManager 
 {
 
   private:
+    OnMessageReceived notifier;
+  
     String inputBuffer;
     int inputIndex;
     
     String outputBuffer;    
     int outputIndex;
 
-  public:
-    typedef void (*OnMessageReceived)(String message);
-    OnMessageReceived notifier;
+  public:   
 
     bool isReading;
     bool isSending;
@@ -48,7 +49,7 @@ class CommunicationManager
         Serial.write("Bluetooth set as server");
     }
 
-    bool GetDataAtOnce() 
+    String GetDataAtOnce() 
     {
       inputBuffer = "";
       char data;
@@ -59,7 +60,7 @@ class CommunicationManager
         inputBuffer += data;
       }
       
-      return inputBuffer.length() > 0;
+      return inputBuffer;
     }
 
     bool SendDataAtOnce(String data)
