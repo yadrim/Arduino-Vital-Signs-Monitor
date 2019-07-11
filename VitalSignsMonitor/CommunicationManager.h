@@ -1,10 +1,8 @@
 #ifndef __COMMUNICATION_MANAGER_H_INCLUDED__
 #define __COMMUNICATION_MANAGER_H_INCLUDED__
 
-#include <SoftwareSerial.h>
 #include "SensorData.h"
 
-SoftwareSerial bluetooth(10,11);
 typedef void (*OnMessageReceived)(String message);
 
 class CommunicationManager 
@@ -27,50 +25,7 @@ class CommunicationManager
 
     void Setup() 
     {
-      bluetooth.begin(115200);
-
-      SendDataAtOnce("AT");
-      if(GetDataAtOnce() != "OK")
-      {
-        Serial.write("No bluetooth available");
-        return;
-      }
-
-      SendDataAtOnce("AT+NAME=MonitorSignosVitales");
-      if(GetDataAtOnce() == "OK")
-        Serial.write("Bluetooth set name");
-
-      SendDataAtOnce("AT+PSWD=1234");
-      if(GetDataAtOnce() == "OK")
-        Serial.write("Bluetooth set security");
-
-      SendDataAtOnce("AT+ROLE=0");
-      if(GetDataAtOnce() == "OK")
-        Serial.write("Bluetooth set as server");
-    }
-
-    String GetDataAtOnce() 
-    {
-      inputBuffer = "";
-      char data;
-
-      while(bluetooth.available())
-      {
-        data = bluetooth.read();
-        inputBuffer += data;
-      }
-      
-      return inputBuffer;
-    }
-
-    bool SendDataAtOnce(String data)
-    {
-      outputBuffer = data;
-
-      for(int i=0; i<outputBuffer.length(); i++)
-      {
-        bluetooth.write(outputBuffer[i]);
-      }
+      Serial1.begin(38400);
     }
 
     void SendData(String data)
@@ -80,7 +35,7 @@ class CommunicationManager
       isSending = true;
     }
 
-    void setOnMessageCallBack(OnMessageReceived callback)
+    void SetOnMessageCallBack(OnMessageReceived callback)
     {
       notifier = callback;
     }
@@ -90,13 +45,13 @@ class CommunicationManager
       char data;
       
       // read commands
-      if(bluetooth.available())
+      if(Serial1.available())
       {
         isReading = true;
-        data = bluetooth.read();
+        data = Serial1.read();
         inputBuffer += data;
 
-        if(data == '\0')
+        if(data == '\0' || data == '\n')
         {
           isReading = false;
 
@@ -108,13 +63,11 @@ class CommunicationManager
       // send data
       if(isSending)
       {
+        data = outputBuffer[outputIndex++];
+        Serial1.write(data);
+
         if(outputIndex == outputBuffer.length())
-          isSending = false;        
-        else
-        {
-          data = outputBuffer[outputIndex++];
-          bluetooth.write(data);
-        }
+          isSending = false;
       }
     }
 };

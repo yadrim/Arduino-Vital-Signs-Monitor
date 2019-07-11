@@ -5,8 +5,7 @@
 
 #include <Adafruit_GFX.h>    // Include core graphics library
 #include <Adafruit_ILI9341.h> // Include Adafruit_ILI9341 library to drive the display
-
-#include <SoftwareSerial.h>  
+#include <ArduinoJson.h>
 
 #define bselect 6    // PIN para el boton para moverse entre items
 #define benter 12     // PIN para el boton de Activar/Seleccionar
@@ -53,18 +52,15 @@ bool resetMenu;            // bandera para indicar si se necesita volver a dibuj
 uint32_t lastActionTime;   // tiempo en que se ejecuto la ultima accion del usuario
 int ShowPatientMode;       // 1- Save Mode 2- Show Mode
 
-SoftwareSerial BT(1,0);    // pines RX y TX
-
-
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  BT.begin(38400);  
 
   SetupDisplay();          // inicializar y configurar la pantalla
 
   storage.Setup();         // configurar el repositorio de datos
   communication.Setup();
+  communication.SetOnMessageCallBack(MessageReceived);
 
   /*
     temperature.Setup();
@@ -89,6 +85,7 @@ void setup() {
 
 void loop() {
   RTC.updateTime();
+  communication.Update();
 
   action = NONE;           // en cada ciclo de la funcion loop, establecemos por defecto que no se ha ejecutado ninguna acccion
 
@@ -458,17 +455,52 @@ void UpdateConection(){
      DisplayConectionScreen();
      resetMenu = false;
    }
-   switch (action)
-   {
-    case ENTER:
-
-     if(BT.available())    // Si llega un dato por el puerto BT se envía al monitor serial
-     Serial.write(BT.read());
- 
-     if(Serial.available())  // Si llega un dato por el monitor serial se envía al puerto BT
-     BT.write(Serial.read());
-   }
 
   resetMenu = false; 
+}
+
+StaticJsonDocument<256> request;
+
+void MessageReceived(String message)
+{
+  DeserializationError error;
+  const char* operation;
+
+  if(message.length() == 0)
+    return;
+
+  error = deserializeJson(request, message);
+  if(error != NULL)
+  {
+    Serial.print(F("error verifying message: "));
+    Serial.println(error.c_str());
+    return;
+  }
+
+  operation = request["operation"];
+  if(operation == "getDeviceStatus")
+  {
+    ProcessGetDeviceStatus();
+  }
+  
+}
+
+void ProcessGetDeviceStatus()
+{
+  StaticJsonDocument<256> response;
+  String message;
+  
+  response["operation"] = "getDeviceStatus";
+  response["SystemTime"] = HRS;
+  response["heartRate"] = heartRate.initialized;
+  response["temperature"] = temperature.initialized;
+  response["pressure"] = pressure.initialized;
+
+  serializeJson(response, message);
+  communication.SendData(message);
+}
+
+void ProcessSavePatient(String parameter)
+{
   
 }
