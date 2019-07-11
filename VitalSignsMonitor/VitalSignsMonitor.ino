@@ -62,6 +62,8 @@ void setup() {
   communication.Setup();
   communication.SetOnMessageCallBack(MessageReceived);
 
+  Serial.println("configuracion completa");
+
   /*
     temperature.Setup();
     pressure.Setup();
@@ -469,6 +471,8 @@ void MessageReceived(String message)
   if(message.length() == 0)
     return;
 
+  Serial.println(message.c_str());
+
   error = deserializeJson(request, message);
   if(error != NULL)
   {
@@ -478,8 +482,12 @@ void MessageReceived(String message)
   }
 
   operation = request["operation"];
-  if(operation == "getDeviceStatus")
+  Serial.println(operation);
+  
+  
+  if(strcmp(operation, "getDeviceStatus") == 0)
   {
+    Serial.println("procesando getDeviceStatu");
     ProcessGetDeviceStatus();
   }
   
