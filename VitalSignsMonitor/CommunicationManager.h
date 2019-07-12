@@ -13,6 +13,7 @@ class CommunicationManager
   
     String inputBuffer;
     int inputIndex;
+    uint32_t lastInputTime;
     
     String outputBuffer;    
     int outputIndex;
@@ -52,6 +53,12 @@ class CommunicationManager
       // read commands
       if(Serial1.available())
       {
+        if ((millis() - lastInputTime) > 15000)
+        {
+          lastInputTime = 0;
+          inputBuffer = "";
+        }
+        
         isReading = true;
         data = Serial1.read();
 
@@ -68,6 +75,7 @@ class CommunicationManager
         }
 
         inputBuffer += data;
+        lastInputTime = millis();
       }
 
       // send data

@@ -467,7 +467,6 @@ void MessageReceived(String message)
 {
   DeserializationError error;
   const char* operation;
-  const char* parameter;
 
   if(message.length() == 0)
     return;
@@ -483,7 +482,7 @@ void MessageReceived(String message)
   }
 
   operation = request["operation"];
-  parameter = request["payload"];
+
   Serial.println(operation);
   
   if(strcmp(operation, "getDeviceStatus") == 0)
@@ -532,12 +531,15 @@ void ProcessSavePatient()
     return;
   }
 
+  Serial.println("processing patient");
+
   patient.position = number - 1;
   strcpy(patient.name, request["payload"]["name"]);
   patient.birthDate.day = atoi(request["payload"]["dobDay"]);
   patient.birthDate.month = atoi(request["payload"]["dobMonth"]);
   patient.birthDate.year = atoi(request["payload"]["dobYear"]);
 
+  Serial.println("saving patient");
   storage.SavePatient(patient);
 
   response["sucess"] = "true";

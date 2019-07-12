@@ -126,7 +126,7 @@ class StorageManager {
     void Setup() {
       EEPROM_Read(0, settings);
 
-     // settings.ready = 0;
+      //settings.ready = 0;
       if (!settings.ready) {
       Serial.print("Begin to register patients");
       ClearMemory();
