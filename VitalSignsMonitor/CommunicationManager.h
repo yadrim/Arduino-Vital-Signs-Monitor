@@ -63,7 +63,7 @@ class CommunicationManager
 
           Serial.println("mensaje recibido");
 
-          if(notifier != NULL)
+          if(notifier != NULL && isSending == false)
             notifier(inputBuffer);
         }
 

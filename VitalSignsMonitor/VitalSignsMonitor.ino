@@ -467,6 +467,7 @@ void MessageReceived(String message)
 {
   DeserializationError error;
   const char* operation;
+  const char* parameter;
 
   if(message.length() == 0)
     return;
@@ -482,15 +483,24 @@ void MessageReceived(String message)
   }
 
   operation = request["operation"];
+  parameter = request["payload"];
   Serial.println(operation);
-  
   
   if(strcmp(operation, "getDeviceStatus") == 0)
   {
-    Serial.println("procesando getDeviceStatu");
+    Serial.println("procesando getDeviceStatus");
     ProcessGetDeviceStatus();
   }
-  
+  if(strcmp(operation, "savePatient") == 0)
+  {
+    Serial.println("procesando savePatient");
+    ProcessSavePatient();
+  }
+  if(strcmp(operation, "getPatientData") == 0)
+  {
+    Serial.println("procesando getPatientData");
+    ProcessGetPatientData();
+  }
 }
 
 void ProcessGetDeviceStatus()
@@ -498,7 +508,6 @@ void ProcessGetDeviceStatus()
   StaticJsonDocument<256> response;
   String message;
   
-  response["operation"] = "getDeviceStatus";
   response["SystemTime"] = HRS;
   response["heartRate"] = heartRate.initialized;
   response["temperature"] = temperature.initialized;
@@ -508,7 +517,58 @@ void ProcessGetDeviceStatus()
   communication.SendData(message);
 }
 
-void ProcessSavePatient(String parameter)
+void ProcessSavePatient()
 {
+  StaticJsonDocument<256> response;
+  String message;
   
+  Patient patient;
+  int number;
+
+  number = atoi(request["payload"]["number"]);
+  if(number < 0 || number > 4)
+  {
+    Serial.println("Patient does not exists");
+    return;
+  }
+
+  patient.position = number - 1;
+  strcpy(patient.name, request["payload"]["name"]);
+  patient.birthDate.day = atoi(request["payload"]["dobDay"]);
+  patient.birthDate.month = atoi(request["payload"]["dobMonth"]);
+  patient.birthDate.year = atoi(request["payload"]["dobYear"]);
+
+  storage.SavePatient(patient);
+
+  response["sucess"] = "true";
+  serializeJson(response, message);
+  communication.SendData(message);
+}
+
+void ProcessGetPatientData()
+{
+  StaticJsonDocument<256> response;
+  JsonArray data;
+  String message;
+  
+  int number;
+
+  number = atoi(request["payload"]["patient"]);
+  if(number < 0 || number > 4)
+  {
+    Serial.println("Patient does not exists");
+    return;
+  }
+
+  response["patient"] = number;
+  data = response.createNestedArray("data");
+  
+  storage.ReadPatientData();
+  do{
+    
+    
+  }while(storage.NextPatientData() == true);
+  
+  serializeJson(response, message);
+  communication.SendData(message);
 }

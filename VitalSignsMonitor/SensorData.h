@@ -37,15 +37,6 @@ struct DeviceSettings {
   char identifier[10];
 };
 
-struct Patient {
-  int position;
-  bool active;
-
-  char name[50];
-  BloodTypeEnum bloodType;
-  int birthDate;
-};
-
 struct DateTime {
   int day;
   int month;
@@ -56,6 +47,14 @@ struct DateTime {
   int seconds;
 };
 
+struct Patient {
+  int position;
+  bool active;
+
+  char name[50];
+  BloodTypeEnum bloodType;
+  DateTime birthDate;
+};
 
 struct PatientData {
   int position;
@@ -249,7 +248,6 @@ class StorageManager {
         // datos generales de paciente
         patient.position = i;
         patient.bloodType = OP;
-        patient.birthDate = 0;
         patient.active = false;
         sprintf(patient.name, "Paciente %d \n", i + 1);
 
