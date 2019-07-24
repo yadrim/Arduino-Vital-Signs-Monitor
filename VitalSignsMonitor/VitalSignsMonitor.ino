@@ -553,8 +553,10 @@ void ProcessSavePatient()
 void ProcessGetPatientData()
 {
   StaticJsonDocument<256> response;
-  JsonArray data;
+  JsonArray data = response.createNestedArray("data");
   String message;
+  char strDate[15];
+  char strTime[15];
   
   int number;
 
@@ -566,12 +568,26 @@ void ProcessGetPatientData()
   }
 
   response["patient"] = number;
-  data = response.createNestedArray("data");
   
   storage.ReadPatientData();
   do{
+    if(!storage.currentData.active)
+      continue;
+
+    JsonObject item = data.createNestedObject();
+
+    //format date and time
+    sprintf(strDate,"%02d/%02d/%04d\0", storage.currentData.date.day, storage.currentData.date.month, storage.currentData.date.year);
+    sprintf(strTime,"%02d:%02d:%02d\0", storage.currentData.date.hours, storage.currentData.date.minutes, storage.currentData.date.seconds);
     
+    item["number"] = storage.currentData.position + 1;
+    item["date"] = strDate;
+    item["time"] = strTime;
     
+    item["temp"] = storage.currentData.data1;
+    item["pressure"] = storage.currentData.data2;
+    item["bpm"] = storage.currentData.data3;    
+    item["spo2"] = storage.currentData.data4;
   }while(storage.NextPatientData() == true);
   
   serializeJson(response, message);
