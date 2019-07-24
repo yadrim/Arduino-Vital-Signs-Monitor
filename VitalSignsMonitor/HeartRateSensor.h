@@ -14,7 +14,6 @@
  */
 class HeartRateSensor : public SensorBase
 {
-
   PulseOximeter sensor; // sensor de ritmo cardiaco
   uint32_t lastBeatDetected;
 

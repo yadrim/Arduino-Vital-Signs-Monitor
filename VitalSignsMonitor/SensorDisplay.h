@@ -33,7 +33,7 @@ void ClearScreen() {
 
 void SetupDisplay() {
   tft.begin();
- //myRTC.setDS1302Time(50, 30, 02, 0, 24, 4, 2019); // 24/04/2019   02:30:50  
+  //RTC.setDS1302Time(50, 21, 01, 0, 22, 7, 2019); // 24/04/2019   02:30:50  
   ClearScreen();
 }
 

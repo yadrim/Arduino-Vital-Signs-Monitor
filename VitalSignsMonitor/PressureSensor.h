@@ -21,6 +21,7 @@ public:
   }
 
   void Update() {
+
     canDisplay = (millis() - lastDisplayUpdate) > REPORTING_PERIOD_MS; // verificamos si ya paso el intervalo de actualizacion 
   }
 

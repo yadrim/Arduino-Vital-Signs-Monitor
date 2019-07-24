@@ -4,7 +4,7 @@
 #include "SensorData.h"
 #include "SensorDisplay.h"
 
-#define REPORTING_PERIOD_MS 500  // intervalo de tiempo en milsegundos para actualizar la pantalla, con esto evitamos parpadeos.
+#define REPORTING_PERIOD_MS 1000 // intervalo de tiempo en milsegundos para actualizar la pantalla, con esto evitamos parpadeos.
 
 /**
  * Clase base para los sensores, aqui definimos el comportamiento y variables en comun
@@ -14,7 +14,7 @@ class SensorBase
 
 
 protected:
-  uint32_t lastDisplayUpdate; // ultima actualizacion de pantalla
+  uint32_t lastDisplayUpdate; //ultima actualizacion de pantalla
 
 public:
   

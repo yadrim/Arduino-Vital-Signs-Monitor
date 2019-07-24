@@ -1,3 +1,4 @@
+
 #include "HeartRateSensor.h"
 #include "TemperatureSensor.h"
 #include "PressureSensor.h"
@@ -7,10 +8,10 @@
 #include <Adafruit_ILI9341.h> // Include Adafruit_ILI9341 library to drive the display
 #include <ArduinoJson.h>
 
-#define bselect 6    // PIN para el boton para moverse entre items
-#define benter 12     // PIN para el boton de Activar/Seleccionar
-#define bmenu 7     // PIN Para el boton de cambiar entre pantallas
-#define bmemory 5    // PIN para el boton de guardar los datos 
+#define bselect 25    // PIN para el boton para moverse entre items
+#define benter 24     // PIN para el boton de Activar/Seleccionar
+#define bmenu 23     // PIN Para el boton de cambiar entre pantallas
+#define bmemory 22    // PIN para el boton de guardar los datos 
 
 // Enumeracion de los botones que puede presionar el usuario
 enum ActionTypeEnum {
@@ -63,6 +64,7 @@ void setup() {
   communication.SetOnMessageCallBack(MessageReceived);
 
   Serial.println("configuracion completa");
+  heartRate.Setup();
 
   /*
     temperature.Setup();
@@ -87,6 +89,7 @@ void setup() {
 
 void loop() {
   RTC.updateTime();
+  //heartRate.sensor.update();
   communication.Update();
 
   action = NONE;           // en cada ciclo de la funcion loop, establecemos por defecto que no se ha ejecutado ninguna acccion
