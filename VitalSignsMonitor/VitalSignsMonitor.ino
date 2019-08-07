@@ -522,12 +522,13 @@ void ProcessGetDeviceStatus()
 void ProcessSavePatient()
 {
   StaticJsonDocument<256> response;
+  JsonObject clientObject;
   String message;
   
   Patient patient;
-  int number;
+  int number;  
 
-  number = atoi(request["payload"]["number"]);
+  number = request["payload"]["number"];
   if(number < 0 || number > 4)
   {
     Serial.println("Patient does not exists");
