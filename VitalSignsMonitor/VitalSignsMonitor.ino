@@ -350,6 +350,7 @@ void UpdatePatients() {
       if (ShowPatientMode == 1) {
 
         PatientData data;
+        data.active = true;
         data.data1 = temperature.GetValue();
         data.data2 = pressure.GetValue();
         data.data3 = heartRate.GetValue();
@@ -562,6 +563,7 @@ void ProcessGetPatientData()
   int number;
 
   number = atoi(request["payload"]["patient"]);
+  
   if(number < 0 || number > 4)
   {
     Serial.println("Patient does not exists");
@@ -569,12 +571,18 @@ void ProcessGetPatientData()
   }
 
   response["patient"] = number;
-  
-  storage.ReadPatientData();
-  do{
-    if(!storage.currentData.active)
-      continue;
 
+  Serial.println("Obtienendo datos del paciente #");
+  Serial.print(number);
+
+  storage.selectedPatient = number;
+  storage.ReadPatientData();
+  
+  do{
+  //  if(!storage.currentData.active)
+    //  continue;
+
+    Serial.println("Procesando dato de paciente");
     JsonObject item = data.createNestedObject();
 
     //format date and time

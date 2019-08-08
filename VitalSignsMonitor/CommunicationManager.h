@@ -34,11 +34,6 @@ class CommunicationManager
       outputIndex = 0;
       outputBuffer = data;
       isSending = true;
-
-      data += '\n';
-
-      Serial.println("enviando mensaje:");
-      Serial.print(data.c_str());
     }
 
     void SetOnMessageCallBack(OnMessageReceived callback)
@@ -49,6 +44,17 @@ class CommunicationManager
     void Update()
     {
       char data;
+
+      // send data
+      if(isSending)
+      {
+        Serial.println("Enviando datos: ");
+        Serial.println(outputBuffer);
+        
+        Serial1.println(outputBuffer.c_str());        
+        outputBuffer = "";
+        isSending = false;
+      }
       
       // read commands
       if(Serial1.available())
@@ -76,26 +82,6 @@ class CommunicationManager
 
         inputBuffer += data;
         lastInputTime = millis();
-      }
-
-      // send data
-      if(isSending)
-      {
-        Serial1.write(outputBuffer.c_str());
-        isSending = false;
-
-        /*
-        data = outputBuffer[outputIndex++];
-        Serial1.write(data);
-        delay(30);
-        Serial.print(data);
-        */
-
-        if(outputIndex == outputBuffer.length())
-        {
-          isSending = false;
-          Serial1.flush();
-        }
       }
     }
 };

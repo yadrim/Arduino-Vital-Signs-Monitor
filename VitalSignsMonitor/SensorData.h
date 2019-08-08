@@ -207,6 +207,9 @@ class StorageManager {
 //        
         Serial.print(" - Position: #");
         Serial.print(currentData.position + 1);
+        Serial.print(" - Active: ");
+        Serial.print(currentData.active);
+        
         Serial.print("Temp: ");
         Serial.print(currentData.data1);
         Serial.print("- Pressure: ");
